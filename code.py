@@ -27,7 +27,7 @@ from fourwire import FourWire
 import gc
 from micropython import const
 from terminalio import FONT
-from time import sleep
+import time
 
 from adafruit_display_text import bitmap_label
 from adafruit_st7789 import ST7789
@@ -51,13 +51,61 @@ def main():
         colstart=53, auto_refresh=False)
     gc.collect()
 
+    # Make a bitmap for the gamma calibration pattern
+    #
+    # The calibration pattern has a thick border of a 50% dither pattern around
+    # a central square of a solid color. The idea is to determine correction
+    # coefficients to match perceived brightness values of the solid square
+    # compared to the dithered border.
+    #
+    # For example, suppose the palette (pal) is
+    #   pal[0] = 0x000000   # black
+    #   pal[1] = 0xFFFFFF   # white
+    #   pal[2] = 0x808080   # theoretically 50% gray, but likely more or less
+    #
+    # with a calibration pattern of
+    #   010101010101
+    #   101010101010
+    #   010122220101
+    #   101022221010
+    #   010101010101
+    #   101010101010
+    #
+    # The calibration goal would be to adjust pal[2] until it matches the
+    # perceived brightness of a 50% dither between pal[0] and pal[1].
+    #
+    PAD    = const(24)
+    LEFT   = const((TFT_W * 1) // 5)
+    RIGHT  = const((TFT_W * 4) // 5)
+    TOP    = const(((TFT_H - PAD) * 2 ) // 7)
+    BOTTOM = const(((TFT_H - PAD) * 5 ) // 7)
+
+    bmp = Bitmap(TFT_W, TFT_H - PAD, 3)
+    for y in range(bmp.height):
+        for x in range(bmp.width):
+            if TOP < y < BOTTOM and LEFT < x < RIGHT:
+                bmp[x, y] = 2
+            else:
+                bmp[x, y] = (x ^ y) & 1  # 50% dither pattern between 0 and 1
+
+    # Make a 3 color palette
+    pal = Palette(3)
+    pal[0] = 0x000000
+    pal[1] = 0xFFFFFF
+    pal[2] = 0x808080
+
+    # Combine the bitmap and palette into a TileGrid
+    test_pattern = TileGrid(bmp, pixel_shader=pal, x=0, y=PAD)
+
     # Make a text label for status messages
     status = bitmap_label.Label(FONT, text="", color=0xFF0000, scale=2)
-    status.x = 0
-    status.y = 8
+    status.anchor_point = (0, 0)
+    status.anchored_position = (0, 0)
+    status.text = f"{pal[0]:06x} {pal[1]:06x} {pal[2]:06x}"
 
     # Arrange TileGrid and label into the root group
     grp = Group(scale=1)
+    grp.append(test_pattern)
     grp.append(status)
     display.root_group = grp
 
@@ -65,10 +113,9 @@ def main():
     # (this is a standard MicroPython performance boosting trick)
     _collect = gc.collect
     _refresh = display.refresh
-    _sleep = sleep
+    _sleep = time.sleep
 
     # MAIN EVENT LOOP
-    status.text = "Status line 01234567"
     while True:
         _collect()
         _refresh()
