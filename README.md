@@ -4,6 +4,19 @@
 
 **WORK IN PROGRESS (ALPHA)**
 
+The screenshot below shows an interactive test pattern from the html/js web
+version of my gamma curve checker. I'm using this as a baseline reference for
+what should happen on a color managed display.
+
+![screenshot of an interactive gamma curve testing tool](gamma-cal-web-srgb.png)
+
+This curve was calibrated on a color managed monitor set for the sRGB
+IEC61966-2.1 color profile. On other sRGB color managed monitors, the
+brightness of the 7 vertically stacked gray bars should look consistent from
+left to right. For displays using some other color profile, the middle third of
+each bar may appear to have a different brightness value compared to the left
+and right ends. The effect only works when the image is viewed at 100% scaling.
+
 
 ## Hardware
 
