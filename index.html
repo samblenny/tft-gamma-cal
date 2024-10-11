@@ -5,9 +5,6 @@
 <title>TFT Gamma Cal</title>
 <style>
  :root{--F: #ffdcec; --B: #3e3e3e; --H: #25c3c0; --L: #459cda; --O: #444; }
- @media (prefers-color-scheme: light){
-  :root{--F: #101010; --B: #f5f5f5; --H: #313131; --L: #3f40f9; --O: #aaa; }
- }
  html{ background: var(--B); -webkit-text-size-adjust: none; }
  body{ background: var(--B); color: var(--F); min-height: 100vh;
   width: 100%; font-family: sans-serif; font-size: 17px; }
@@ -34,20 +31,20 @@
 <canvas id="canvas">
 </div>
 
-<!-- sRGB IEC61966-2.1 curve: 190 141 107 81 60 45 34 -->
+<!-- sRGB IEC61966-2.1 curve: 194 143 108 82 60 45 32 -->
 
 <div id="sliders">
 <label for="gray1_2">1/2&nbsp;&nbsp;</label>
-<input type="range" id="gray1_2" name="gray1_2" min="1" max="254" value="190" step="1" />
+<input type="range" id="gray1_2" name="gray1_2" min="1" max="254" value="194" step="1" />
 <br>
 <label for="gray1_4">1/4&nbsp;&nbsp;</label>
-<input type="range" id="gray1_4" name="gray1_4" min="1" max="254" value="141" step="1" />
+<input type="range" id="gray1_4" name="gray1_4" min="1" max="254" value="143" step="1" />
 <br>
 <label for="gray1_8">1/8&nbsp;&nbsp;</label>
-<input type="range" id="gray1_8" name="gray1_8" min="1" max="254" value="107" step="1" />
+<input type="range" id="gray1_8" name="gray1_8" min="1" max="254" value="108" step="1" />
 <br>
 <label for="gray1_16">1/16&nbsp;</label>
-<input type="range" id="gray1_16" name="gray1_16" min="1" max="254" value="81" step="1" />
+<input type="range" id="gray1_16" name="gray1_16" min="1" max="254" value="82" step="1" />
 <br>
 <label for="gray1_32">1/32&nbsp;</label>
 <input type="range" id="gray1_32" name="gray1_32" min="1" max="254" value="60" step="1" />
@@ -56,7 +53,7 @@
 <input type="range" id="gray1_64" name="gray1_64" min="1" max="254" value="45" step="1" />
 <br>
 <label for="gray1_128">1/128</label>
-<input type="range" id="gray1_128" name="gray1_128" min="1" max="254" value="34" step="1" />
+<input type="range" id="gray1_128" name="gray1_128" min="1" max="254" value="32" step="1" />
 <br>
 </div>
 
