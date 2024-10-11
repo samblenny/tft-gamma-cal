@@ -15,8 +15,11 @@ const GRAY1_64  = document.querySelector('#gray1_64');
 const GRAY1_128 = document.querySelector('#gray1_128');
 
 const STATUS = document.querySelector('#status');
+const CURVE  = document.querySelector('#curve');
 
-function paintTestPattern() {
+let customCurve = undefined;
+
+function paintTestPattern(changedBySlider) {
     const w = 134;
     const h = 240;
     CANVAS.width = w;
@@ -63,7 +66,7 @@ function paintTestPattern() {
         for(let x=0; x<w; x++) {
             let dither = (x ^ y) & 1;
             let luma = dither ? dither_dark : dither_light;
-            if ((w/3 < x) && (x < w*(2/3))) {
+            if (x > w/2) {
                 luma = solid;
             }
             let i = rowBase + (x * 4);
@@ -74,14 +77,63 @@ function paintTestPattern() {
         }
     }
     CTX.putImageData(imageData, 0, 0);
+    if(changedBySlider) {
+        CURVE.value = "custom";
+        saveCustomCurve();
+    }
 }
 
-GRAY1_2.addEventListener("input", paintTestPattern);
-GRAY1_4.addEventListener("input", paintTestPattern);
-GRAY1_8.addEventListener("input", paintTestPattern);
-GRAY1_16.addEventListener("input", paintTestPattern);
-GRAY1_32.addEventListener("input", paintTestPattern);
-GRAY1_64.addEventListener("input", paintTestPattern);
-GRAY1_128.addEventListener("input", paintTestPattern);
+// Save slider values to the custom curve preset array
+function saveCustomCurve() {
+    customCurve = [GRAY1_2.value, GRAY1_4.value, GRAY1_8.value,
+        GRAY1_16.value, GRAY1_32.value, GRAY1_64.value];
+}
+
+// Change preset curve in response to the HTML input select control
+function loadCurve(name) {
+    let curve = undefined;
+    switch(name) {
+        case "sRGB-ish":
+            // From mid-2010's Dell LED backlit monitor with CIE1976 82% gamut
+            curve = [171, 127, 97, 74, 56, 41, 30];
+            break;
+        case "2010s-LED":
+            // Average of mid-2010's nice LED backlit tablet/laptop displays
+            curve = [181, 129, 93, 68, 50, 36, 28];
+            break;
+        case "2020s-P3":
+            // Average of 2020's P3 wide gamut displays
+            curve = [185, 135, 97, 71, 51, 36, 27];
+            break;
+        case "custom":
+            // Custom curve from moving the sliders by hand
+            if(customCurve === undefined) {
+                // If custom curve hasn't been defined yet, then initialize
+                // it from the previously selected preset's values
+                saveCustomCurve();
+            }
+            curve = customCurve;
+            break;
+    }
+    // Adjust slider values for the new curve
+    GRAY1_2.value = curve[0];
+    GRAY1_4.value = curve[1];
+    GRAY1_8.value = curve[2];
+    GRAY1_16.value = curve[3];
+    GRAY1_32.value = curve[4];
+    GRAY1_64.value = curve[5];
+    // Redraw the test pattern (false means this change wasn't from a slider)
+    paintTestPattern(false);
+}
+
+GRAY1_2.addEventListener("input", (e) => { paintTestPattern(true); });
+GRAY1_4.addEventListener("input", (e) => { paintTestPattern(true); });
+GRAY1_8.addEventListener("input", (e) => { paintTestPattern(true); });
+GRAY1_16.addEventListener("input", (e) => { paintTestPattern(true); });
+GRAY1_32.addEventListener("input", (e) => { paintTestPattern(true); });
+GRAY1_64.addEventListener("input", (e) => { paintTestPattern(true); });
+GRAY1_128.addEventListener("input", (e) => { paintTestPattern(true); });
+
+CURVE.addEventListener("change", (e) => { loadCurve(e.target.value); });
 
 paintTestPattern();

@@ -4,17 +4,24 @@
 
 **WORK IN PROGRESS (ALPHA)**
 
-The screenshot below shows an interactive test pattern from the html/js web
-version of my gamma curve checker. I'm using this as a baseline reference for
-what should happen on a color managed display.
+The screenshots below show test patterns from an interactive gamma curve
+checker web tool. These can be used to compare gamma responses between
+displays, which is a useful proxy for the more difficult task of comparing
+color gamuts.
 
-![screenshot of an interactive gamma curve testing tool](gamma-cal-web-srgb.png)
+For each of the 7 gray bars in the test pattern, the left half is a
+checkerboard dither pattern while the right half is a solid color. When your
+display's gamma response matches the gamma curve defined by the slider values,
+the gray bars should appear equally bright from left to right. On a display
+with some other gamma response, the left and right halves won't match.
 
-The curve above was calibrated on an LED backlit Dell monitor that I
-attempted to configure for displaying colors as sRGB. The monitor specs say it
-has a CIE1976 82% gamut, which, as best I can tell, is approximately the full
-sRGB gamut. The table below shows how I configured macOS and the monitor in my
-attempt to turn off features that would skew color reproduction away from sRGB.
+![screenshot of gamma curve checker tool with sRGB preset](curve-sRGBish-584x438.png)
+
+This curve is for an LED backlit Dell monitor that I attempted to configure for
+displaying colors as sRGB. The monitor specs say it has a CIE1976 82% gamut,
+which, as best I can tell, is approximately the full sRGB gamut. The table
+below shows how I configured macOS and the monitor in my attempt to turn off
+features that would skew color reproduction away from sRGB.
 
 | Device  | Setting                           | Value             |
 | ------- | --------------------------------- | ----------------- |
@@ -26,12 +33,24 @@ attempt to turn off features that would skew color reproduction away from sRGB.
 |         | Color Settings &gt; Preset Modes  | Standard          |
 
 
-On a monitor configured to have a similar color response to mine (sRGB-ish),
-the brightness of the 7 vertically stacked gray bars should look consistent
-from left to right. For displays with a different color response, the middle
-third of each bar may appear to have a different brightness value compared to
-the left and right ends. The effect only works when the image is viewed at 100%
-scaling.
+### Curve for 2010's Tablets/Laptops
+
+This curve uses slider values averaged from some mid-2010 good quality LED
+backlit tablet and laptop displays, configured to use their default color
+profiles.
+
+![screenshot of gamma curve checker tool with 2010's preset](curve-2010s-584x438.png)
+
+
+### Curve for 2020's P3 Wide Gamut
+
+This curve uses slider values averaged from some 2020's devices with P3 wide
+gamut displays, configured to use their default color profiles.
+
+![screenshot of gamma curve checker tool with P3 preset](curve-P3-584x438.png)
+
+
+
 
 
 ### Test PNG (web style)
