@@ -6,78 +6,59 @@
 const CANVAS = document.querySelector('#canvas');
 const CTX = CANVAS.getContext("2d", {willReadFrequently: true});
 
-const GRAY03 = document.querySelector('#gray03');
-const GRAY06 = document.querySelector('#gray06');
-const GRAY12 = document.querySelector('#gray12');
-const GRAY25 = document.querySelector('#gray25');
-const GRAY37 = document.querySelector('#gray37');
-const GRAY50 = document.querySelector('#gray50');
-const GRAY62 = document.querySelector('#gray62');
-const GRAY75 = document.querySelector('#gray75');
-const GRAY87 = document.querySelector('#gray87');
+const GRAY1_2   = document.querySelector('#gray1_2');
+const GRAY1_4   = document.querySelector('#gray1_4');
+const GRAY1_8   = document.querySelector('#gray1_8');
+const GRAY1_16  = document.querySelector('#gray1_16');
+const GRAY1_32  = document.querySelector('#gray1_32');
+const GRAY1_64  = document.querySelector('#gray1_64');
+const GRAY1_128 = document.querySelector('#gray1_128');
 
 const STATUS = document.querySelector('#status');
 
 function paintTestPattern() {
-    const w = 200;
-    const h = 300;
+    const w = 134;
+    const h = 240;
     CANVAS.width = w;
     CANVAS.height = h;
     // getImageData returns RGBA Uint8ClampedArray of pixels in row-major order
     const imageData = CTX.getImageData(0, 0, w, h);
     const rgba = imageData.data;
-    const gray06 = GRAY06.value;
-    const gray03 = GRAY03.value;
-    const gray12 = GRAY12.value;
-    const gray25 = GRAY25.value;
-    const gray37 = GRAY37.value;
-    const gray50 = GRAY50.value;
-    const gray62 = GRAY62.value;
-    const gray75 = GRAY75.value;
-    const gray87 = GRAY87.value;
-    let curve = [gray03, gray06, gray12, gray25, gray37, gray50, gray62, gray75, gray87];
+    const gray1_2  = GRAY1_2.value;
+    const gray1_4  = GRAY1_4.value;
+    const gray1_8  = GRAY1_8.value;
+    const gray1_16 = GRAY1_16.value;
+    const gray1_32 = GRAY1_32.value;
+    const gray1_64 = GRAY1_64.value;
+    const gray1_128 = GRAY1_128.value;
+    let curve = [gray1_2, gray1_4, gray1_8, gray1_16, gray1_32, gray1_64, gray1_128];
     STATUS.textContent = "curve: " + curve.join(" ");
     let dither_dark = 0;
     let dither_light = 255;
     let solid = 127;
     for (let y=0; y<h; y++) {
         let rowBase = y * w * 4;
-        if (y < h * (1/9)) {
-            dither_dark = 0;
-            solid = gray03;
-            dither_light = gray06;
-        } else if (y < h * (2/9)) {
-            dither_dark = 0;
-            solid = gray06;
-            dither_light = gray12;
-        } else if (y < h * (3/9)) {
-            dither_dark = 0;
-            solid = gray12;
-            dither_light = gray25;
-        } else if (y < h * (4/9)) {
-            dither_dark = 0;
-            solid = gray25;
-            dither_light = gray50;
-        } else if (y < h * (5/9)) {
-            dither_dark = gray25;
-            solid = gray37;
-            dither_light = gray50;
-        } else if (y < h * (6/9)) {
-            dither_dark = 0;
-            solid = gray50;
+        if (y < h * (1/7)) {
+            solid = gray1_2;
             dither_light = 255;
-        } else if (y < h * (7/9)) {
-            dither_dark = gray50;
-            solid = gray62;
-            dither_light = gray75;
-        } else if (y < h * (8/9)) {
-            dither_dark = gray50;
-            solid = gray75;
-            dither_light = 255;
+        } else if (y < h * (2/7)) {
+            solid = gray1_4;
+            dither_light = gray1_2;
+        } else if (y < h * (3/7)) {
+            solid = gray1_8;
+            dither_light = gray1_4;
+        } else if (y < h * (4/7)) {
+            solid = gray1_16;
+            dither_light = gray1_8;
+        } else if (y < h * (5/7)) {
+            solid = gray1_32;
+            dither_light = gray1_16;
+        } else if (y < h * (6/7)) {
+            solid = gray1_64;
+            dither_light = gray1_32;
         } else {
-            dither_dark = gray75;
-            solid = gray87;
-            dither_light = 255;
+            solid = gray1_128;
+            dither_light = gray1_64;
         }
         for(let x=0; x<w; x++) {
             let dither = (x ^ y) & 1;
@@ -95,18 +76,12 @@ function paintTestPattern() {
     CTX.putImageData(imageData, 0, 0);
 }
 
-function handleSlider(tag, event) {
-    paintTestPattern();
-}
-
-GRAY03.addEventListener("input", (e) => { handleSlider("GRAY03", e); });
-GRAY06.addEventListener("input", (e) => { handleSlider("GRAY06", e); });
-GRAY12.addEventListener("input", (e) => { handleSlider("GRAY12", e); });
-GRAY25.addEventListener("input", (e) => { handleSlider("GRAY25", e); });
-GRAY37.addEventListener("input", (e) => { handleSlider("GRAY37", e); });
-GRAY50.addEventListener("input", (e) => { handleSlider("GRAY50", e); });
-GRAY62.addEventListener("input", (e) => { handleSlider("GRAY62", e); });
-GRAY75.addEventListener("input", (e) => { handleSlider("GRAY75", e); });
-GRAY87.addEventListener("input", (e) => { handleSlider("GRAY87", e); });
+GRAY1_2.addEventListener("input", paintTestPattern);
+GRAY1_4.addEventListener("input", paintTestPattern);
+GRAY1_8.addEventListener("input", paintTestPattern);
+GRAY1_16.addEventListener("input", paintTestPattern);
+GRAY1_32.addEventListener("input", paintTestPattern);
+GRAY1_64.addEventListener("input", paintTestPattern);
+GRAY1_128.addEventListener("input", paintTestPattern);
 
 paintTestPattern();
