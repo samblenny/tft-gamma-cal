@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TFT Gamma Cal</title>
 <style>
- :root{--F: #ffdcec; --B: #3e3e3e; --H: #25c3c0; --L: #459cda; --O: #444; }
+ :root{--F: #ffdcec; --B: #3d3d3d; --H: #25c3c0; --L: #459cda; --O: #444; }
  html{ background: var(--B); -webkit-text-size-adjust: none; }
  body{ background: var(--B); color: var(--F); min-height: 100vh;
   width: 100%; font-family: sans-serif; font-size: 17px; }
@@ -12,13 +12,16 @@
  canvas{ margin: 0; padding: 0; box-sizing: content-box; }
  p,li,label{ line-height: 1.23em; }
  label{ display: inline-block; min-height: 20px; }
- h1{ margin: 10px 0 20px 0px; font-size: 24px; color: var(--H); }
+ h1{ margin: 50px 0 40px 0px; font-size: 24px; color: var(--H); }
  p{ margin: 11px 0; }
+ .dim{ color: var(--H); }
+ table{ border-collapse: collapse; }
+ td{ padding: 5px; border: 1px solid var(--H);}
  main{ margin: 0 auto; padding: 2px 25px 115px 25px;
-  max-width: 700px; }
+  max-width: 630px; }
  canvas{ display: inline-block; width: 134px; height: 240px;
   background: var(--O); image-rendering: pixelated; }
- input[type=range]{ width: 300px; }
+ input[type=range]{ width: 350px; }
  #sliders{ display: inline-block; line-height: 34px; padding: 3px 12px 0; }
  #status, label{ font-family: monospace; font-size: 11pt;}
 </style>
@@ -31,35 +34,52 @@
 <canvas id="canvas">
 </div>
 
-<!-- sRGB IEC61966-2.1 curve: 194 143 108 82 60 45 32 -->
+<!-- sRGB IEC61966-2.1 curve: 171 127 97 74 56 41 30 -->
 
 <div id="sliders">
 <label for="gray1_2">1/2&nbsp;&nbsp;</label>
-<input type="range" id="gray1_2" name="gray1_2" min="1" max="254" value="194" step="1" />
+<input type="range" id="gray1_2" name="gray1_2" min="1" max="254" value="171" step="1" />
 <br>
 <label for="gray1_4">1/4&nbsp;&nbsp;</label>
-<input type="range" id="gray1_4" name="gray1_4" min="1" max="254" value="143" step="1" />
+<input type="range" id="gray1_4" name="gray1_4" min="1" max="254" value="127" step="1" />
 <br>
 <label for="gray1_8">1/8&nbsp;&nbsp;</label>
-<input type="range" id="gray1_8" name="gray1_8" min="1" max="254" value="108" step="1" />
+<input type="range" id="gray1_8" name="gray1_8" min="1" max="254" value="97" step="1" />
 <br>
 <label for="gray1_16">1/16&nbsp;</label>
-<input type="range" id="gray1_16" name="gray1_16" min="1" max="254" value="82" step="1" />
+<input type="range" id="gray1_16" name="gray1_16" min="1" max="254" value="74" step="1" />
 <br>
 <label for="gray1_32">1/32&nbsp;</label>
-<input type="range" id="gray1_32" name="gray1_32" min="1" max="254" value="60" step="1" />
+<input type="range" id="gray1_32" name="gray1_32" min="1" max="254" value="56" step="1" />
 <br>
 <label for="gray1_64">1/64&nbsp;</label>
-<input type="range" id="gray1_64" name="gray1_64" min="1" max="254" value="45" step="1" />
+<input type="range" id="gray1_64" name="gray1_64" min="1" max="254" value="41" step="1" />
 <br>
 <label for="gray1_128">1/128</label>
-<input type="range" id="gray1_128" name="gray1_128" min="1" max="254" value="32" step="1" />
+<input type="range" id="gray1_128" name="gray1_128" min="1" max="254" value="30" step="1" />
 <br>
 </div>
 
 <p style="clear: both; margin-top: 20px;">
 <span id="status"></status>
 </p>
+
+<p class="dim" style="padding-top: 100px;">
+The default curve above was calibrated on an LED backlit Dell monitor that I
+attempted to configure for displaying colors as sRGB. The monitor specs say it
+has a CIE1976 82% gamut, which, as best I can tell, is approximately the full
+sRGB gamut. The table below shows how I configured macOS and the monitor in my
+attempt to turn off features that would skew color reproduction away from sRGB.
+</p>
+
+<table class="dim">
+<tr><td>macOS</td><td>Displays &gt; Color profile</td><td>sRGB IEC61966-2.1</td></tr>
+<tr><td>monitor</td><td>Brightness</td><td>20%</td></tr>
+<tr><td></td><td>Contrast</td><td>100%</td></tr>
+<tr><td></td><td>Display Settings &gt; Sharpness</td><td>50%</td></tr>
+<tr><td></td><td>Color Settings &gt; Image Enhance</td><td>Off</td></tr>
+<tr><td></td><td>Color Settings &gt; Preset Modes</td><td>Standard</td></tr>
+</table>
 
 <script src="main.js"></script>
 
