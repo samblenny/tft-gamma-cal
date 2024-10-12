@@ -99,7 +99,7 @@ function loadCurve(name) {
             break;
         case "2010s-LED":
             // Average of mid-2010's nice LED backlit tablet/laptop displays
-            curve = [181, 129, 93, 68, 50, 36, 28];
+            curve = [184, 131, 94, 68, 50, 36, 28];
             break;
         case "2020s-P3":
             // Average of 2020's P3 wide gamut displays
