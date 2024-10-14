@@ -20,7 +20,7 @@
 # - https://docs.circuitpython.org/projects/display_text/en/latest/api.html
 # - https://learn.adafruit.com/circuitpython-display_text-library?view=all
 #
-from board import SPI, TFT_CS, TFT_DC
+import board
 from digitalio import DigitalInOut, Direction
 from displayio import Bitmap, Group, Palette, TileGrid, release_displays
 from fourwire import FourWire
@@ -155,18 +155,11 @@ def main():
     # This function has initialization code and the main event loop. Under
     # normal circumstances, this function does not return.
 
-    # The Feather TFT defaults to using the built-in display for a console.
-    # So, first, release the default display so we can re-initialize it below.
-    release_displays()
-    gc.collect()
-
-    # Initialize ST7789 display with native display size of 240x135px.
+    # Prepare to use the Feather TFT's built in  ST7789 display with native
+    # display size of 240x135px.
     TFT_W = const(240)
     TFT_H = const(135)
-    spi = SPI()
-    bus = FourWire(spi, command=TFT_DC, chip_select=TFT_CS)
-    display = ST7789(bus, rotation=270, width=TFT_W, height=TFT_H, rowstart=40,
-        colstart=53, auto_refresh=False)
+    display = board.DISPLAY
     gc.collect()
 
     # Make a bitmap for the gamma calibration pattern
@@ -237,7 +230,6 @@ def main():
     # Cache frequently used callables to save time on dictionary name lookups
     # (this is a standard MicroPython performance boosting trick)
     _collect = gc.collect
-    _refresh = display.refresh
     _sleep = time.sleep
 
     # MAIN EVENT LOOP
@@ -256,7 +248,6 @@ def main():
         grays_status = palette_format % (dark, light, mid)
         status.text = grays_status
         _collect()
-        _refresh()
         _sleep(0.1)
         # Prompt for a new grayscale value for the center box. This uses 6-bit
         # values to make the data entry easier and to use less space on the
