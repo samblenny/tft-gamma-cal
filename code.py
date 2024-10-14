@@ -40,28 +40,37 @@ class GammaCurve:
     BLACK = 0   # index into PRESETS for black
     WHITE = 1   # index into PRESETS for white
     PRESETS = {
-        #             black white  1/2  1/4  1/8  1/16  1/32  1/64  1/128
-        "FeatherTFT": (  0,  255,  196, 148, 104,   64,   36,   16,     8),
-        "sRGB-ish":   (  0,  255,  171, 127,  97,   74,   56,   41,    30),
-        "2020's-P3":  (  0,  255,  185, 135,  97,   71,   51,   36,    27),
-        "2010's-TFT": (  0,  255,  184, 131,  94,   68,   50,   36,    28),
+        #          black white  1/2  1/4  1/8  1/16  1/32  1/64  1/128
+        "Feather": (  0,  255,  196, 148, 104,   64,   36,   16,     8),
+        "sRGB":    (  0,  255,  171, 127,  97,   74,   56,   41,    30),
+        "P3":      (  0,  255,  185, 135,  97,   71,   51,   36,    27),
+        "tft":     (  0,  255,  184, 131,  94,   68,   50,   36,    28),
     }
 
     def __init__(self):
         # Initialize the gamma curve test pattern
-        self.curve = list(self.PRESETS["FeatherTFT"])
-        self.palette = Palette(len(self.curve))
-        self.bars = len(self.curve) - 2  # omit black, omit white
+        palette_size = len(list(self.PRESETS.values())[0])
+        self.palette = Palette(palette_size)
+        self.bars = palette_size - 2         # omit black, omit white
+        self.load_preset("Feather")
+
+    def preset_help(self):
+        # Return a help string listing the available presets
+        s = ''
+        for k in sorted(self.PRESETS):
+            s += f"{k:>8}  load gamma curve preset\n"
+        return s
+
+    def load_preset(self, name):
+        # Attempt to load argument name as a gamma curve preset.
+        # Returns True if it worked or False if key is not a valid preset name
+        if not name in self.PRESETS:
+            return False
+        self.preset = name
+        self.curve = list(self.PRESETS[name])
         self._update_palette()
         self.selection = self.WHITE + 1  # start at index for 1/2 brightness
-
-    def load_preset(self, key):
-        # Attempt to load argument key as a gamma curve preset.
-        # Returns True if it worked or False if key is not a preset name
-        if not key in self.PRESETS:
-            return False
-        else:
-            return True
+        return True
 
     def _update_palette(self):
         # Update 24-bit colors in palette to match 8-bit gray values of curve.
@@ -186,22 +195,23 @@ leftmost bar, which is a 50% dither of 0x000000 (black) and 0xFFFFFF (white).
 
 Commands:
 
-  1..254   set selected graypoint to an 8-bit integer gray value
-       n   select Next graypoint
-       p   select Previous graypoint
-       ?   show this help message
-"""
+  1..254  set selected graypoint to an 8-bit integer gray value
+       n  select Next graypoint
+       p  select Previous graypoint
+       ?  show this help message
+""" + gamma_curve.preset_help()
     print(help_message)
     waiting_on_serial_input = True
     while True:
         curve_txt = str(gamma_curve)
+        preset = gamma_curve.preset
         if waiting_on_serial_input:
             status.text = 'CHECK SERIAL CONSOLE\n%s' % curve_txt
         else:
-            status.text = '\n%s' % curve_txt
+            status.text = 'Gamma curve preset: %s\n%s' % (preset, curve_txt)
         time.sleep(0.1)
         # Prompt for a new grayscale value
-        ans = input('[%s]: ' % curve_txt)
+        ans = input(f'{preset:8} [{curve_txt}]: ')
         waiting_on_serial_input = False
         try:
             n = int(ans)
@@ -211,13 +221,15 @@ Commands:
             else:
                 print("gray value out of range")
         except ValueError as e:
-            if ans == 'n':                    # "n" for next curve point
+            if ans == 'n':                      # "n" for next curve point
                 gamma_curve.next_graypoint()
-            elif ans == 'p':                  # "p" for previous curve point
+            elif ans == 'p':                    # "p" for previous curve point
                 gamma_curve.prev_graypoint()
-            elif ans == '?':                  # "?" for help
+            elif ans == '?':                    # "?" for help
                 print(help_message)
-            elif ans == '':                   # ignore ""
+            elif ans == '':                     # ignore ""
+                pass
+            elif gamma_curve.load_preset(ans):  # load a gamma curve preset
                 pass
             else:
                 print('eh, what? (for help, try "?")')
