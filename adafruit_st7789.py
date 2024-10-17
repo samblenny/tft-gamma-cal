@@ -62,8 +62,8 @@ _INIT_SEQUENCE = (
     b"\x36\x01\xC0"  # _MADCTL
 #    b"\x26\x01\x01"  # GAMSET 0x01: 2.2 gamma curve
 #    b"\x26\x01\x02"  # GAMSET 0x02: 1.8 gamma curve
-    b"\x26\x01\x04"  # GAMSET 0x04: 2.5 gamma curve
-#    b"\x26\x01\x08"  # GAMSET 0x08: 1.0 gamma curve
+#    b"\x26\x01\x04"  # GAMSET 0x04: 2.5 gamma curve
+    b"\x26\x01\x08"  # GAMSET 0x08: 1.0 gamma curve
     b"\x29\x80\xFF"  # _DISPON and Delay 500ms
 )
 
