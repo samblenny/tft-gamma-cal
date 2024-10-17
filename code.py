@@ -20,7 +20,7 @@
 # - https://docs.circuitpython.org/projects/display_text/en/latest/api.html
 # - https://learn.adafruit.com/circuitpython-display_text-library?view=all
 #
-import board
+from board import DISPLAY, SPI, TFT_CS, TFT_DC
 from digitalio import DigitalInOut, Direction
 from displayio import Bitmap, Group, Palette, TileGrid, release_displays
 from fourwire import FourWire
@@ -40,11 +40,11 @@ class GammaCurve:
     BLACK = 0   # index into PRESETS for black
     WHITE = 1   # index into PRESETS for white
     PRESETS = {
-        #          black white  1/2  1/4  1/8  1/16  1/32  1/64  1/128
-        "Feather": (  0,  255,  196, 148, 104,   64,   36,   16,     8),
-        "sRGB":    (  0,  255,  171, 127,  97,   74,   56,   41,    30),
-        "P3":      (  0,  255,  185, 135,  97,   71,   51,   36,    27),
-        "tft":     (  0,  255,  184, 131,  94,   68,   50,   36,    28),
+        #             black white  1/2  1/4  1/8  1/16  1/32  1/64  1/128
+        "Feather":    (  0,  255,  196, 148, 104,   64,   36,   16,     8),
+        "sRGB":       (  0,  255,  171, 127,  97,   74,   56,   41,    30),
+        "P3":         (  0,  255,  185, 135,  97,   71,   51,   36,    27),
+        "tft":        (  0,  255,  184, 131,  94,   68,   50,   36,    28),
     }
 
     def __init__(self):
@@ -52,7 +52,7 @@ class GammaCurve:
         palette_size = len(list(self.PRESETS.values())[0])
         self.palette = Palette(palette_size)
         self.bars = palette_size - 2         # omit black, omit white
-        self.load_preset("Feather")
+        self.load_preset("sRGB")
 
     def preset_help(self):
         # Return a help string listing the available presets
@@ -113,7 +113,13 @@ def main():
     # display size of 240x135px.
     TFT_W = const(240)
     TFT_H = const(135)
-    display = board.DISPLAY
+    # display = board.DISPLAY
+    release_displays()
+    gc.collect()
+    spi = SPI()
+    bus = FourWire(spi, command=TFT_DC, chip_select=TFT_CS)
+    display = ST7789(bus, rotation=270, width=TFT_W, height=TFT_H, rowstart=40,
+        colstart=53)
     gc.collect()
 
     # Make a gamma curve object which includes a .palette property which we
